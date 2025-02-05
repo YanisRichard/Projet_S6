@@ -7,7 +7,7 @@ export default {
 <template>
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 Your Company. All rights reserved.</p>
+            <p>&copy; 2025 Yanis RICHARD. Projet réalisé dans le cadre d'un apprentissge au sein de la formation MMI à Montbéliard.</p>
         </div>
     </footer>
 </template>

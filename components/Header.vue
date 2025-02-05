@@ -50,7 +50,7 @@ $transition-speed: 0.3s;
   z-index: 1000;
 
   &__container {
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
