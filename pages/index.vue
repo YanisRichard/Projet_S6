@@ -1,9 +1,13 @@
 <script lang="ts">
-import { Header } from '#components';
+import { ParallaxBanner } from '#components';
 </script>
 
 <template>
+
+
   <main class="home">
+    <ParallaxBanner />
+
     <div class="home__hero">
       <h2 class="home__title">Bienvenue sur SafePass - La Sécurité Commence par un Bon Mot de Passe !</h2>
       <p class="home__intro">Dans un monde numérique où les cybermenaces sont omniprésentes, la protection de vos données personnelles débute par un mot de passe sûr et efficace. Chez SecurePass, nous vous aidons à comprendre l'importance des mots de passe robustes et vous fournissons les meilleurs conseils pour améliorer votre cybersécurité.</p>
@@ -17,6 +21,7 @@ import { Header } from '#components';
     <section class="home__section home__section--tips">
       <h3 class="home__subtitle">Nos conseils pour un mot de passe infaillible :</h3>
       <ul class="home__list">
+
         <li class="home__list-item">Utilisez au moins 12 caractères, avec un mix de lettres, chiffres et symboles.</li>
         <li class="home__list-item">Évitez les informations personnelles (date de naissance, nom, etc.).</li>
         <li class="home__list-item">Ne réutilisez jamais le même mot de passe pour plusieurs comptes.</li>

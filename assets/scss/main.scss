@@ -1,0 +1,8 @@
+@use 'foundations/variables';
+@use 'foundations/mixins';
+@use 'foundations/functions';
+@use 'foundations/normalize';
+
+img {
+    max-width: 100%;
+}
