@@ -9,7 +9,7 @@
       ></div>
       <div class="banner__content">
         <slot>
-          <h2 class="banner__title">Bienvenue</h2>
+          <h2 class="banner__title">Avec SafePass, sécuriser vos données sera toujours aussi facile.</h2>
         </slot>
       </div>
     </div>
@@ -30,7 +30,7 @@
     },
     parallaxStrength: {
       type: Number,
-      default: 0.3
+      default: 0.5
     }
   });
   
@@ -87,7 +87,7 @@ $color-background: #0f172a;
     
     &__background {
       position: absolute;
-      inset: -100px 0 -100px 0; // Augmentation de la taille pour éviter les bords blancs
+      inset: -200px 0 -200px 0; // Augmentation de la taille pour éviter les bords blancs
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -114,6 +114,7 @@ $color-background: #0f172a;
       font-size: 3rem;
       font-weight: 700;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
     }
   }
   </style>
