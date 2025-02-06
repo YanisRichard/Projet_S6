@@ -9,7 +9,7 @@
       ></div>
       <div class="banner__content">
         <slot>
-          <h1 class="banner__title">Bienvenue</h1>
+          <h2 class="banner__title">Bienvenue</h2>
         </slot>
       </div>
     </div>
@@ -74,6 +74,12 @@
   </script>
   
   <style lang="scss" scoped>
+  $color-primary: #1a1f3c;
+    $color-secondary: #2c3e50;
+$color-accent: #00f5d4;
+$color-text: #e0e0e0;
+$color-background: #0f172a;
+
   .banner {
     position: relative;
     height: v-bind('height');
@@ -104,8 +110,8 @@
     }
   
     &__title {
-      color: white;
-      font-size: 2.5rem;
+      color: $color-accent;
+      font-size: 3rem;
       font-weight: 700;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
