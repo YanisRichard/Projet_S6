@@ -12,8 +12,8 @@
       <nav class="header__nav">
         <a href="/" class="header__nav-link">Accueil</a>
         <a href="/blog" class="header__nav-link">Blog</a>
-        <a href="/testor" class="header__nav-link">Test MDP</a>
-        <a href="/generator" class="header__nav-link">Générateur MDP</a>
+        <a href="/test-mdp" class="header__nav-link">Test MDP</a>
+        <a href="/generator-mdp" class="header__nav-link">Générateur MDP</a>
       </nav>
     </div>
   </header>
