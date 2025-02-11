@@ -3,120 +3,98 @@ import { ref, computed } from 'vue';
 
 const password = ref('');
 
-// Critères de sécurité avec leurs vérifications
-const criteria = computed(() => [
-  {
-    name: 'Longueur',
-    check: password.value.length >= 12,
-    status: password.value.length >= 12 ? 'success' : 
-            password.value.length >= 8 ? 'warning' : 'danger',
-    description: 'Au moins 12 caractères'
-  },
-  {
-    name: 'Majuscules',
-    check: /[A-Z]/.test(password.value),
-    status: /[A-Z]/.test(password.value) ? 'success' : 'danger',
-    description: 'Au moins une majuscule'
-  },
-  {
-    name: 'Minuscules',
-    check: /[a-z]/.test(password.value),
-    status: /[a-z]/.test(password.value) ? 'success' : 'danger',
-    description: 'Au moins une minuscule'
-  },
-  {
-    name: 'Chiffres',
-    check: /\d/.test(password.value),
-    status: /\d/.test(password.value) ? 'success' : 'danger',
-    description: 'Au moins un chiffre'
-  },
-  {
-    name: 'Caractères spéciaux',
-    check: /[!@#$%^&*(),.?":{}|<>]/.test(password.value),
-    status: /[!@#$%^&*(),.?":{}|<>]/.test(password.value) ? 'success' : 'danger',
-    description: 'Au moins un caractère spécial'
-  }
-]);
+// Vérification des critères
+const checks = computed(() => ({
+  length: password.value.length >= 12,
+  uppercase: /[A-Z]/.test(password.value),
+  lowercase: /[a-z]/.test(password.value),
+  numbers: /\d/.test(password.value),
+  special: /[!@#$%^&*(),.?":{}|<>]/.test(password.value)
+}));
 
-// Score global de sécurité
-const securityScore = computed(() => {
-  const validCriteria = criteria.value.filter(c => c.check).length;
-  return (validCriteria / criteria.value.length) * 100;
+// Calcul du score
+const strengthScore = computed(() => {
+  const { length, uppercase, lowercase, numbers, special } = checks.value;
+  let score = 0;
+  
+  if (password.value.length >= 8) score += 20;
+  if (password.value.length >= 12) score += 20;
+  if (uppercase) score += 20;
+  if (lowercase) score += 20;
+  if (numbers) score += 10;
+  if (special) score += 10;
+  
+  return Math.min(score, 100);
 });
 
-// Message de force du mot de passe
+// Message personnalisé
 const strengthMessage = computed(() => {
-  if (securityScore.value === 100) return { text: 'Très fort', class: 'text-green-500' };
-  if (securityScore.value >= 80) return { text: 'Fort', class: 'text-blue-500' };
-  if (securityScore.value >= 60) return { text: 'Moyen', class: 'text-yellow-500' };
-  if (securityScore.value >= 40) return { text: 'Faible', class: 'text-orange-500' };
-  return { text: 'Très faible', class: 'text-red-500' };
+  if (!password.value) return { text: 'Entrez un mot de passe', color: 'text-gray-400' };
+
+  const missing = [];
+  if (!checks.value.length) missing.push('12 caractères minimum');
+  if (!checks.value.uppercase) missing.push('une majuscule');
+  if (!checks.value.lowercase) missing.push('une minuscule');
+  if (!checks.value.numbers) missing.push('un chiffre');
+  if (!checks.value.special) missing.push('un caractère spécial');
+
+  if (missing.length === 0) {
+    return {
+      text: 'Mot de passe très sécurisé !',
+      color: 'text-green-500'
+    };
+  }
+
+  return {
+    text: `Il manque : ${missing.join(', ')}`,
+    color: `text-${strengthScore.value > 60 ? 'yellow' : 'red'}-500`
+  };
+});
+
+const strengthColor = computed(() => {
+  if (strengthScore.value >= 90) return 'bg-green-500';
+  if (strengthScore.value >= 70) return 'bg-blue-500';
+  if (strengthScore.value >= 50) return 'bg-yellow-500';
+  if (strengthScore.value >= 30) return 'bg-orange-500';
+  return 'bg-red-500';
 });
 </script>
 
 <template>
-  <div class="password-tester">
-    <div class="password-tester__container">
-      <h1 class="password-tester__title">Testeur de Mot de Passe</h1>
+  <div class="password-checker">
+    <div class="password-checker__container">
+      <h1 class="password-checker__title">Vérifiez la force de votre mot de passe</h1>
       
-      <div class="password-tester__input-group">
+      <div class="password-checker__input-wrapper">
         <input
           v-model="password"
           type="text"
           placeholder="Entrez votre mot de passe"
-          class="password-tester__input"
+          class="password-checker__input"
         />
       </div>
 
-      <!-- Barre de progression -->
-      <div class="password-tester__strength-bar">
-        <div 
-          class="password-tester__strength-progress"
-          :style="{ width: `${securityScore}%` }"
-          :class="{
-            'bg-red-500': securityScore < 40,
-            'bg-orange-500': securityScore >= 40 && securityScore < 60,
-            'bg-yellow-500': securityScore >= 60 && securityScore < 80,
-            'bg-blue-500': securityScore >= 80 && securityScore < 100,
-            'bg-green-500': securityScore === 100
-          }"
-        ></div>
-      </div>
-
-      <!-- Message de force -->
-      <div class="password-tester__strength-message" :class="strengthMessage.class">
-        Force du mot de passe : {{ strengthMessage.text }}
-      </div>
-
-      <!-- Liste des critères -->
-      <div class="password-tester__criteria">
-        <div 
-          v-for="(criterion, index) in criteria" 
-          :key="index"
-          class="password-tester__criterion"
-          :class="{
-            'password-tester__criterion--success': criterion.status === 'success',
-            'password-tester__criterion--warning': criterion.status === 'warning',
-            'password-tester__criterion--danger': criterion.status === 'danger'
-          }"
-        >
-          <div class="password-tester__criterion-icon">
-            <span v-if="criterion.status === 'success'">✓</span>
-            <span v-else-if="criterion.status === 'warning'">!</span>
-            <span v-else>✗</span>
-          </div>
-          <div class="password-tester__criterion-content">
-            <h3>{{ criterion.name }}</h3>
-            <p>{{ criterion.description }}</p>
-          </div>
+      <div class="password-checker__strength">
+        <!-- Barre de progression -->
+        <div class="password-checker__progress-bg">
+          <div 
+            class="password-checker__progress-bar"
+            :class="strengthColor"
+            :style="{ width: `${strengthScore}%` }"
+          ></div>
         </div>
+        
+        <!-- Message -->
+        <p class="password-checker__message" :class="strengthMessage.color">
+          {{ strengthMessage.text }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss">
-.password-tester {
+<style lang="scss" scoped>
+.password-checker {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1f3c, #2c3e50);
   padding: 2rem;
@@ -133,13 +111,13 @@ const strengthMessage = computed(() => {
   }
 
   &__title {
-    font-size: 2rem;
+    font-size: 1.8rem;
     text-align: center;
     margin-bottom: 2rem;
     color: #00f5d4;
   }
 
-  &__input-group {
+  &__input-wrapper {
     margin-bottom: 2rem;
   }
 
@@ -151,6 +129,7 @@ const strengthMessage = computed(() => {
     border-radius: 0.5rem;
     color: #ffffff;
     font-size: 1.1rem;
+    transition: all 0.3s ease;
     
     &:focus {
       outline: none;
@@ -158,7 +137,12 @@ const strengthMessage = computed(() => {
     }
   }
 
-  &__strength-bar {
+  &__strength {
+    text-align: center;
+  }
+
+  &__progress-bg {
+    width: 100%;
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -166,73 +150,17 @@ const strengthMessage = computed(() => {
     margin-bottom: 1rem;
   }
 
-  &__strength-progress {
+  &__progress-bar {
     height: 100%;
+    width: 0;
     transition: all 0.3s ease;
   }
 
-  &__strength-message {
-    text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    font-weight: 600;
-  }
-
-  &__criteria {
-    display: grid;
-    gap: 1rem;
-  }
-
-  &__criterion {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
+  &__message {
+    font-size: 1rem;
+    margin-top: 1rem;
+    min-height: 1.5rem;
     transition: all 0.3s ease;
-
-    &--success {
-      border-left: 4px solid #10b981;
-      .password-tester__criterion-icon {
-        color: #10b981;
-      }
-    }
-
-    &--warning {
-      border-left: 4px solid #f59e0b;
-      .password-tester__criterion-icon {
-        color: #f59e0b;
-      }
-    }
-
-    &--danger {
-      border-left: 4px solid #ef4444;
-      .password-tester__criterion-icon {
-        color: #ef4444;
-      }
-    }
-  }
-
-  &__criterion-icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-
-  &__criterion-content {
-    h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    p {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
   }
 }
 </style>
