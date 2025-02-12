@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true } ,
-  
+  plugins: ['~/plugins/sanity.client.ts'],
+
   runtimeConfig: {
     public: {
       sanityProjectId: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,

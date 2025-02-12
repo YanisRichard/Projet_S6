@@ -122,7 +122,7 @@ const strengthColor = computed(() => {
   }
 
   &__input {
-    width: 100%;
+    width: 94%;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.2);
