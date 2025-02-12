@@ -15,4 +15,8 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
+
+  cors: {
+    allowOrigins: ['http://localhost:3000'],
+  },
 })

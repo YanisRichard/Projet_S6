@@ -17,22 +17,10 @@
   </template>
   
   <script setup>
-  const { $sanity } = useNuxtApp()
-  
-  const posts = ref([])
-  
-  onMounted(async () => {
-    const query = `*[_type == "post"] | order(publishedAt desc) {
-      Title,
-      slug,
-      mainImage,
-      publishedAt
-    }`
-    
-    posts.value = await $sanity.fetch(query)
-  })
-  
-  const urlFor = (source) => {
-    return $sanity.image(source).url()
-  }
-  </script>
+const { fetchPosts } = useSanity()
+const posts = ref([])
+
+onMounted(async () => {
+  posts.value = await fetchPosts()
+})
+</script>
